@@ -74,17 +74,17 @@ request_parser_impl::parse(const char *data, size_t len)
 	if ( _status == status_type::READ_HEADER )
 	{
 		auto last_crlf = data_str.find_last_of("\r\n");
-		if ( last_crlf != data_str.length() )
+		if ( last_crlf != data_str.length() - 1 )
 		{
 			if ( last_crlf == std::string::npos )
 			{
 				_truncated_header_bytes = data_str;
 				return _status;
 			}
-			if ( data_str.find_first_of("\r\n\r\n") == std::string::npos )
+			if ( data_str.find("\r\n\r\n") == std::string::npos )
 			{
 				_truncated_header_bytes = data_str.substr(last_crlf+1);
-				data_str = data_str.substr(0, last_crlf);
+				data_str = data_str.substr(0, last_crlf + 1);
 			}
 		}
 

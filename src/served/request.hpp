@@ -159,6 +159,8 @@ public:
 	 */
 	const std::string header(std::string const& header) const;
 
+	const request::header_list headers() const;
+
 	/*
 	 * Get the body of the request.
 	 *

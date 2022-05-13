@@ -132,6 +132,11 @@ request::header(std::string const& header) const
 	return std::string();
 }
 
+const request::header_list request::headers() const
+{
+	return _headers;
+}
+
 const std::string
 request::body() const
 {

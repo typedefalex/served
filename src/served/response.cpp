@@ -119,7 +119,28 @@ response::to_buffer()
 	}
 	for ( const auto & header : _headers )
 	{
-		ss << std::get<0>(header.second) << ": " << std::get<1>(header.second) << "\r\n";
+		if (header.first == "set-cookie")
+		{
+			std::string token;
+			std::string delimiter = "\n";
+			auto s = std::get<1>(header.second);
+
+			size_t pos = s.find(delimiter);
+
+			while (pos != std::string::npos)
+			{
+				token = s.substr(0, pos);
+				ss << std::get<0>(header.second) << ": " << token << "\r\n";
+				s.erase(0, pos + delimiter.length());
+				pos = s.find(delimiter);
+			}
+
+			ss << std::get<0>(header.second) << ": " << s << "\r\n";
+		}
+		else
+		{
+			ss << std::get<0>(header.second) << ": " << std::get<1>(header.second) << "\r\n";
+		}
 	}
 	// If content length not specified we check body size
 	if ( _headers.find("content-length") == _headers.end() )
