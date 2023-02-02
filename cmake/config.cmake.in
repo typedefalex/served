@@ -1,0 +1,31 @@
+@PACKAGE_INIT@
+
+macro(import_targets type)
+    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/served-${type}-targets.cmake")
+        set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "served ${type} libraries were requested but not found")
+        set(${CMAKE_FIND_PACKAGE_NAME}_FOUND OFF)
+        return()
+    endif()
+
+    include("${CMAKE_CURRENT_LIST_DIR}/served-${type}-targets.cmake")
+endmacro()
+
+if(NOT TARGET served::served)
+    set(type "")
+
+    if(SERVED_BUILD_SHARED)
+        set(type "shared")
+    else()
+        set(type "static")
+    endif()
+
+    import_targets(${type})
+    check_required_components(served)
+    message("-- Found ${type} served (version ${${CMAKE_FIND_PACKAGE_NAME}_VERSION})")
+endif()
+
+include(CMakeFindDependencyMacro)
+find_dependency(Boost 1.53 COMPONENTS "system" REQUIRED)
+#INCLUDE (FindRAGEL)
+#find_dependency(RAGEL)
+find_dependency(Threads)
